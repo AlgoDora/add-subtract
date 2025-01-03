@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import "../App.css";
 
-const Subtract = () => {
+const Subtract = ({ handleSubmit }) => {
   const [num1, setNum1] = useState("");
   const [num2, setNum2] = useState("");
-  const [result, setResult] = useState(null);
 
   const handleSubtraction = () => {
-    setResult(Number(num1) - Number(num2));
+    const data = {
+      num1: num1,
+      num2: num2,
+      operation: "subtract",
+    };
+    handleSubmit(data); // Call the handleSubmit function
   };
 
   return (
@@ -26,7 +30,6 @@ const Subtract = () => {
         onChange={(e) => setNum2(e.target.value)}
       />
       <button onClick={handleSubtraction}>Subtract</button>
-      {result !== null && <p>Result: {result}</p>}
     </div>
   );
 };
