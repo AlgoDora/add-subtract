@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import "../App.css";
 
-const Add = ({ handleSubmit }) => {
+const Add = ({ handleSubmit, results }) => {
   const [num1, setNum1] = useState("");
   const [num2, setNum2] = useState("");
+  const [requestId, setRequestId] = useState(null);
 
   const handleAddition = () => {
     const data = {
@@ -11,7 +12,7 @@ const Add = ({ handleSubmit }) => {
       num2: num2,
       operation: "add",
     };
-    handleSubmit(data); // Call the handleSubmit function
+    handleSubmit(data, setRequestId); // Call the handleSubmit function
   };
 
   return (
@@ -30,6 +31,10 @@ const Add = ({ handleSubmit }) => {
         onChange={(e) => setNum2(e.target.value)}
       />
       <button onClick={handleAddition}>Add</button>
+      {requestId && results[requestId] !== undefined && 
+      (
+        <p> Result : {results[requestId]}</p>
+      )}
     </div>
   );
 };
