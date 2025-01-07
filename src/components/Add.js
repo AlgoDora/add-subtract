@@ -12,7 +12,7 @@ const Add = ({ handleSubmit, results }) => {
       num2: num2,
       operation: "add",
     };
-    handleSubmit(data, setRequestId); // Call the handleSubmit function
+    handleSubmit(data, setRequestId); 
   };
 
   return (

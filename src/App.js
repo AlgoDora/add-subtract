@@ -8,7 +8,7 @@ function App() {
   const [ws, setWs] = useState(null);
   const [results, setResults] = useState({});
   
-  useEffect(() => {
+  const reconnectWithWebSocket = () => {
     const socket = new WebSocket("ws://localhost:8000");
     setWs(socket);
 
@@ -24,16 +24,23 @@ function App() {
       });
     };
 
+    return socket;
+  }
+
+  useEffect(() => {
+    const socket = reconnectWithWebSocket();
+
     return () => {
       socket.close();
     };
+
   }, []);
 
   const handleSubmit = async (data_, callback) => {
-    const id = uuidv4(); // Generate a unique ID
+    const id = uuidv4(); 
 
     const data = {
-      num1: parseFloat(data_.num1), // Ensure numbers are sent correctly
+      num1: parseFloat(data_.num1), 
       num2: parseFloat(data_.num2),
       operation: data_.operation,
       id: id,
@@ -41,14 +48,24 @@ function App() {
 
     try {
       callback(id);
-
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ requestId: id }));
-        console.log(`Sent requestId ${id} to WebSocket server`);
+      let tried = false;
+      let socket;
+      let timeout = 0;
+      if (!ws || !(ws.readyState === WebSocket.OPEN)) {
+        socket = reconnectWithWebSocket();
+        tried = true;
+        timeout = 3000;
+      }
+      if (!tried) socket = ws;
+      setTimeout (() => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+      
+          socket.send(JSON.stringify({ requestId: id }));
+          console.log(`Sent requestId ${id} to WebSocket server`);
       } else {
         console.warn("WebSocket is not open. Unable to send requestId.");
       }
-
+    }, timeout);
       const response = await axios.post("http://localhost:3001/call", data);
       console.log("Response from server:", response.data);
     } catch (error) {

@@ -12,7 +12,7 @@ const Subtract = ({ handleSubmit, results }) => {
       num2: num2,
       operation: "subtract",
     };
-    handleSubmit(data, setRequestId); // Call the handleSubmit function
+    handleSubmit(data, setRequestId); 
   };
 
   return (
